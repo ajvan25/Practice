@@ -46,6 +46,8 @@ if (mysqli_num_rows($result) > 0) {
 
 <body>
     <div class="container mt-5">
+        <a class="btn btn-info" href="create.php">Create product</a></br></br>
+        <h1>Products List</h1>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3"></div>
 
         <?= $layout ?>
