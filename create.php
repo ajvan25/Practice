@@ -1,12 +1,14 @@
 <?php
 require_once  "db_connect.php";
 require_once "file_upload.php";
-//require_once "index.php";
+require_once "index.php";
 
 if (isset($_POST["create"])) {
     $name = $_POST["name"];
     $price = $_POST["price"];
+
     $picture = fileUpload($_FILES["picture"]);
+    var_dump($picture);
 
     $sql = "INSERT INTO products (name, price, picture) VALUES ('$name', $price, '$picture[0]}')";
     if (mysqli_query($conn, $sql)) {

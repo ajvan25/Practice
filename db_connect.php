@@ -6,7 +6,7 @@ try {
     $database = "php_crud";
 
     $conn = mysqli_connect($host, $user, $password, $database);
-    //echo "Connected successfully!";
+    echo "Connected successfully!";
 } catch (mysqli_sql_exception $e) {
     echo "Connection failed: " . $e->getMessage();
 }
