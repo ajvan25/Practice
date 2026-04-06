@@ -22,7 +22,8 @@ if (mysqli_num_rows($result) > 0) {
     <h5 class='card-title'>{$row['name']}</h5>
     <p class='card-text'>{$row['price']}</p>
     <a href='details.php?id={$row['id']}' class='btn btn-primary'>Details</a>
-     </div>
+     <a href='update.php?id={$row["id"]}'  class='btn btn-warning'>Update</a>
+    </div>
   </div>
 </div>
  ";

@@ -10,11 +10,11 @@ if (isset($_POST["create"])) {
     $picture = fileUpload($_FILES["picture"]);
     var_dump($picture);
 
-    $sql = "INSERT INTO products (name, price, picture) VALUES ('$name', $price, '$picture[0]}')";
+    $sql = "INSERT INTO products (name, price, picture) VALUES ('$name', $price, '{$picture[0]}')";
     if (mysqli_query($conn, $sql)) {
         echo "<div class = 'alert alert-success'> role='alert'>new Product created successfully! {$picture[1]}
         </div>";
-        header("Location: index.php");
+        header("refresh: 3;url=index.php");
     } else {
         echo "<div class = 'alert alert-danger'> role='alert'>Error found, {$picture[1]}
         </div>";

@@ -1,6 +1,6 @@
 <?php
 require_once "db_connect.php";
-//require_once "index.php";
+require_once "index.php";
 
 
 if (isset($_GET['id'])) {
