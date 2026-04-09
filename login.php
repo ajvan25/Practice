@@ -3,11 +3,11 @@ session_start();
 //var_dump($_SESSION);
 require_once "./components/db_connect.php";
 
-if (isset($_SESSION['user']) != "") {
+if (isset($_SESSION['user'])) {
     header("Location: home.php");
     exit;
 }
-if (isset($_SESSION['admin']) != "") {
+if (isset($_SESSION['adm'])) {
     header("Location: dashboard.php");
     exit;
 }
@@ -44,7 +44,7 @@ if (isset($_POST['login'])) {
             var_dump($row);
 
             if ($row["status"] == "adm") {
-                $_SESSION['admin'] = $row['id'];
+                $_SESSION['adm'] = $row['id'];
                 header("Location: dashboard.php");
             } else {
                 $_SESSION['user'] = $row['id'];

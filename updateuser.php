@@ -3,19 +3,51 @@ session_start();
 
 require_once "./components/db_connect.php";
 require_once "./components/file_upload.php";
-if (isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
+if (!isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
     header("Location: login.php");
     exit;
 }
-if ($_SESSION['user']) {
+if ($_SESSION['user'] ?? '') {
     $id = $_SESSION['user'];
+    $backBtn = "home.php";
 } else {
     $id = $_SESSION['adm'];
+    $backBtn = "dashboard.php";
 }
 $sql = "SELECT * FROM users WHERE id = $id";
 $result = mysqli_query($conn, $sql);
+
 $row = mysqli_fetch_assoc($result);
-var_dump($row);
+if (isset($_POST['update'])) {
+    $fname = cleanInputs($_POST['fname']);
+    $lname = cleanInputs($_POST['lname']);
+    $date_of_birth = cleanInputs($_POST['date_of_birth']);
+    $picture = fileUpload($_FILES['picture']);
+    $email = cleanInputs($_POST['email']);
+
+    if ($_FILES["picture"]["error"] == 0) {
+        /* checking if the picture name of the product is not avatar.png to remove it from pictures folder */
+        if ($row["picture"] != "avatar.png") {
+            unlink("pictures/$row[picture]");
+        }
+        $sql = "UPDATE users SET first_name = '$fname', last_name = '$lname', picture = '$picture[0]', date_of_birth = '$date_of_birth', email = '$email' WHERE id = {$id}";
+    } else {
+        $sql = "UPDATE users SET first_name = '$fname', last_name = '$lname', date_of_birth = '$date_of_birth', email = '$email' WHERE id = {$id}";
+    }
+
+    if (mysqli_query($connect, $sql)) {
+        echo "<div class='alert alert-success' role='alert'>
+                    User has been updated, {$picture[1]}
+            </div>";
+        header("refresh: 3; url=$backBtn");
+    } else {
+        echo "<div class='alert alert-danger' role='alert'>
+                 Error found, {$picture[1]}
+            </div>";
+    }
+}
+
+
 
 ?>
 <!doctype html>

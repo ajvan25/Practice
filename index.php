@@ -1,8 +1,8 @@
 <?php
 require_once  "./components/db_connect.php";
 //echo "Welcome to PHP CRUD Application!";
-
-$sql = 'SELECT * FROM products'; // write the query 
+// write the query 
+$sql = 'SELECT * FROM products' . ' LEFT JOIN suppliers ON fk_supplier_id = suppliers.supplierId';
 $result = mysqli_query($conn, $sql); //execute the query
 //var_dump($result);
 $layout = '';
@@ -10,17 +10,20 @@ $layout = '';
 if (mysqli_num_rows($result) > 0) {
     //fetch data
     $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    // var_dump($rows);
+    var_dump($rows);
 
-
+    // line no 18. if there is supplier, we will show the supplier name, if not, we will show No supplier
     foreach ($rows as $row) {
+
+        $supplierName = $row['sup_name'] ?: 'No Supplier';
         $layout .= "
         <div> 
         <div class='card my-3' style='width: 18rem;'>
-  <img src='./pictures/{$row['picture']}' class='card-img-top' alt='{$row['name']}'>
-  <div class='card-body'>
-    <h5 class='card-title'>{$row['name']}</h5>
-    <p class='card-text'>{$row['price']}</p>
+       <img src='./pictures/{$row['picture']}' class='card-img-top' alt='{$row['name']}'>
+       <div class='card-body'>
+      <h5 class='card-title'>{$row['name']}</h5>
+      <p class='card-text'>{$row['price']}</p>
+    <p class='card-text'>Supplier: $supplierName</p>
     <a href='details.php?id={$row['id']}' class='btn btn-primary'>Details</a>
     <a href='update.php?id={$row["id"]}'  class='btn btn-warning'>Update</a>
     <a href='delete.php?id={$row["id"]}'  class='btn btn-danger'>Delete</a>

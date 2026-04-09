@@ -2,53 +2,39 @@
 require_once "./components/db_connect.php";
 require_once "./components/file_upload.php";
 
-
-
-$id = (int)$_GET['id']; // sanitize id
-
-$sql = "SELECT * FROM products WHERE id = ?";
-$stmt = mysqli_prepare($conn, $sql);
-
-mysqli_stmt_bind_param($stmt, "i", $id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-
-if (mysqli_num_rows($result) != 1) {
-    header("Location: index.php");
-    exit;
-}
-
+$id = $_GET['id']; // to take the value from the parameter "id" in the url
+$sql = "SELECT * FROM products WHERE id = $id";
+$result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
-var_dump($row);
-
-
+// var_dump($row);
 if (isset($_POST["update"])) {
-    $name = trim($_POST["name"]);
-    $price = (float)$_POST["price"];
-    $picture = $row["picture"]; // default to existing picture
+    /* taking values from inputs */
+    $name = $_POST["name"];
+    $price = $_POST["price"];
+    $picture = fileUpload($_FILES["picture"]);
 
-    if ($_FILES["picture"]["error"] == 4) {
-        // No new picture
-        $sql = "UPDATE products SET picture = ?,name = ?, price = ? WHERE id = ?";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sssi", $picture, $name, $price, $id);
-    } else {
-        // New picture uploaded
-        $picture = fileUpload($_FILES["picture"]);
+
+    /* checking if a picture has been selected in the input for the image */
+    if ($_FILES["picture"]["error"] == 0) {
+        /* checking if the picture name of the product is not product.png to remove it from pictures folder */
         if ($row["picture"] != "product.png") {
-            unlink("pictures/" . $row["picture"]);
+            unlink("pictures/$row[picture]");
         }
-        $sql = "UPDATE products SET name = ?, price = ?, picture = ? WHERE id = ?";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "sssi", $name, $price, $picture[0], $id);
+        $sql = "UPDATE products SET name = '$name', price = $price, picture = '$picture[0]' WHERE id = {$id}";
+    } else {
+        $sql = "UPDATE products SET name = '$name', price = $price WHERE id = {$id}";
     }
 
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    // Redirect after update
-    header("Location: index.php");
-    exit;
+    if (mysqli_query($conn, $sql)) {
+        echo "<div class='alert alert-success' role='alert'>
+           product has been updated, {$picture[1]}
+         </div>";
+        header("refresh: 3; url= index.php");
+    } else {
+        echo "<div class='alert alert-danger' role='alert'>
+           error found, {$picture[1]}
+         </div>";
+    }
 }
 
 mysqli_close($conn);

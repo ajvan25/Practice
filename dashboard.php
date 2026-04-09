@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "./components/db_connect.php";
-if (isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
+if (!isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
     header("Location: login.php");
     exit;
 }
@@ -13,7 +13,7 @@ var_dump($_SESSION);
 
 
 
-$sql = "SELECT * From users WHERE id = {$_SESSION["admin"]}"; // selecting logged-in user details from the session user//
+$sql = "SELECT * From users WHERE id = {$_SESSION["adm"]}"; // selecting logged-in user details from the session user//
 
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
@@ -44,7 +44,6 @@ if (mysqli_num_rows($resultUsers) > 0) {
 }
 
 mysqli_close($conn);
-?>
 
 ?>
 <!DOCTYPE html>
@@ -69,7 +68,7 @@ mysqli_close($conn);
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">edit</a>
+                    <a class="nav-link" href="updateuser.php">edit</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php?logout">Logout</a>

@@ -3,18 +3,13 @@ session_start();
 require_once "./components/db_connect.php";
 
 // If a normal user is logged in but not an admin, send them to login
-if (isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
+if (!isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
     header("Location: login.php");
     exit;
 }
 // If an admin is logged in, send them to the dashboard
 if (isset($_SESSION['adm'])) {
     header("Location: dashboard.php");
-    exit;
-}
-// If no one is logged in, redirect to login
-if (!isset($_SESSION['user']) && !isset($_SESSION['adm'])) {
-    header("Location: login.php");
     exit;
 }
 

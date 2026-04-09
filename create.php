@@ -1,25 +1,57 @@
 <?php
 require_once "./components/db_connect.php";
 require_once "./components/file_upload.php";
-//require_once "index.php";
 
-if (isset($_POST["create"])) {
-    $name = $_POST["name"];
-    $price = $_POST["price"];
+$sqlSuppliers = "SELECT * FROM suppliers";
+$resultSupplier = mysqli_query($conn, $sqlSuppliers);
+$supplierRows = mysqli_fetch_all($resultSupplier, MYSQLI_ASSOC);
+//var_dump($supplierRows);
 
-    $picture = fileUpload($_FILES["picture"]);
-    // var_dump($picture);
-
-    $sql = "INSERT INTO products (name, price, picture) VALUES ('$name', $price, '{$picture[0]}')";
-    if (mysqli_query($conn, $sql)) {
-        echo "<div class = 'alert alert-success' role='alert'>new Product created successfully!, {$picture[1]}
-        </div>";
-        header("refresh: 3;url=index.php");
-    } else {
-        echo "<div class = 'alert alert-danger' role='alert'>Error found, {$picture[1]}
-        </div>";
-    }
+$options = '';
+foreach ($supplierRows as $supplier) {
+    $options .= "<option value = '{$supplier['supplierId']}'>{$supplier['sup_name']}</options>";
 }
+//var_dump($_POST)
+if (isset($_POST["create_product"])) {
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $supplier = $_POST['supplier'];
+
+    $picture = fileUpload($_FILES['picture']);
+    //var_dump($FILES);
+    //exit;
+
+    $sql = "INSERT INTO products (name, price, picture,fk_supplier_id) VALUES ('$name', $price, '$picture[0]',$supplier)";
+    //echo $sql;
+    //exit();
+    $result = mysqli_query($conn, $sql);
+    //var_dump($result);
+    if ($result) {
+        echo "<div class ='alert alert-success'>
+         New product has been created! $picture[1]
+         </div>
+         ";
+    } else {
+        echo "<div class ='alert alert-success'>
+         Something went wrong!
+         </div>
+         ";
+    }
+    header("refresh: 3;url=index.php");
+}
+
+
+
+
+//     if (mysqli_query($conn, $sql)) {
+//         echo "<div class = 'alert alert-success' role='alert'>new Product created successfully!, {$picture[1]}
+//         </div>";
+//         header("refresh: 3;url=index.php");
+//     } else {
+//         echo "<div class = 'alert alert-danger' role='alert'>Error found, {$picture[1]}
+//         </div>";
+//     }
+// }
 
 
 
@@ -41,6 +73,7 @@ if (isset($_POST["create"])) {
 
         <h1>Create a new product</h1>
         <form method="POST" enctype="multipart/form-data">
+
             <div class="mb-3 mt-3">
                 <label for="name" class="form-label">Product Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
@@ -53,7 +86,17 @@ if (isset($_POST["create"])) {
                 <label for="picture" class="form-label">Picture</label>
                 <input type="file" class="form-control" id="picture" name="picture">
             </div>
-            <button type="submit" class="btn btn-primary">Create Product</button>
+            <div class="mb-3">
+                <label for="supplier">Supplier</label>
+                <select name="supplier" id="supplier" class="form-select">
+                    <option value="null">Select one of the options</option>
+                    <?= $options ?>
+
+                </select>
+            </div>
+
+
+            <input type="submit" class="btn btn-primary" name="create_product" value="Create Product"></input>
             <a href="index.php" class="btn btn-warning">Back to products</a>
 
         </form>
