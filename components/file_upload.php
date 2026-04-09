@@ -1,9 +1,8 @@
 <?php
 function fileUpload($picture)
 {
-
     if ($picture["error"] == 4) {
-        $pictureName = "product.png";
+        $pictureName = "avatar.png";
         $message = "No picture has been chosen, but you can upload an image later :)";
     } else {
         $checkIfImage = getimagesize($picture["tmp_name"]);

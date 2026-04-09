@@ -1,5 +1,5 @@
 <?php
-require_once  "db_connect.php";
+require_once  "./components/db_connect.php";
 //echo "Welcome to PHP CRUD Application!";
 
 $sql = 'SELECT * FROM products'; // write the query 
@@ -17,12 +17,13 @@ if (mysqli_num_rows($result) > 0) {
         $layout .= "
         <div> 
         <div class='card my-3' style='width: 18rem;'>
-  <img src='{$row['picture']}' class='card-img-top' alt='{$row['name']}'>
+  <img src='./pictures/{$row['picture']}' class='card-img-top' alt='{$row['name']}'>
   <div class='card-body'>
     <h5 class='card-title'>{$row['name']}</h5>
     <p class='card-text'>{$row['price']}</p>
     <a href='details.php?id={$row['id']}' class='btn btn-primary'>Details</a>
-     <a href='update.php?id={$row["id"]}'  class='btn btn-warning'>Update</a>
+    <a href='update.php?id={$row["id"]}'  class='btn btn-warning'>Update</a>
+    <a href='delete.php?id={$row["id"]}'  class='btn btn-danger'>Delete</a>
     </div>
   </div>
 </div>

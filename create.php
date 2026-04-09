@@ -1,22 +1,22 @@
 <?php
-require_once  "db_connect.php";
-require_once "file_upload.php";
-require_once "index.php";
+require_once "./components/db_connect.php";
+require_once "./components/file_upload.php";
+//require_once "index.php";
 
 if (isset($_POST["create"])) {
     $name = $_POST["name"];
     $price = $_POST["price"];
 
     $picture = fileUpload($_FILES["picture"]);
-    var_dump($picture);
+    // var_dump($picture);
 
     $sql = "INSERT INTO products (name, price, picture) VALUES ('$name', $price, '{$picture[0]}')";
     if (mysqli_query($conn, $sql)) {
-        echo "<div class = 'alert alert-success'> role='alert'>new Product created successfully! {$picture[1]}
+        echo "<div class = 'alert alert-success' role='alert'>new Product created successfully!, {$picture[1]}
         </div>";
         header("refresh: 3;url=index.php");
     } else {
-        echo "<div class = 'alert alert-danger'> role='alert'>Error found, {$picture[1]}
+        echo "<div class = 'alert alert-danger' role='alert'>Error found, {$picture[1]}
         </div>";
     }
 }
@@ -40,8 +40,8 @@ if (isset($_POST["create"])) {
     <div class="container mt-5">
 
         <h1>Create a new product</h1>
-        <form method="POST" action="create_process.php">
-            <div class="mb-3">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3 mt-3">
                 <label for="name" class="form-label">Product Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>

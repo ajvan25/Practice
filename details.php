@@ -1,14 +1,20 @@
 <?php
-require_once "db_connect.php";
-require_once "index.php";
+require_once "C:\wamp64\www\php\Practice\components\db_connect.php";
+require_once "./components/file_upload.php";
+//require_once "index.php";
 
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = (int)$_GET['id'];
 
+    $sql = "SELECT * FROM products WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-    $sql = 'SELECT * FROM products WHERE id =  $id'; // write the query
-    $result = mysqli_query($conn, $sql);
+    // $sql = "SELECT * FROM products WHERE id = $id";
+    // $result = mysqli_query($conn, $sql);
 
     // Fetch the product data
     if (mysqli_num_rows($result) == 1) {
@@ -40,7 +46,8 @@ if (isset($_GET['id'])) {
         <h1>Product Details</h1>
 
         <div class="card" style="width: 100%; max-width: 600px;">
-            <img src="pictures/<?= $row['picture'] ?>" class="card-img-top" alt="<?= $row['name'] ?>">
+
+            <img src="./pictures/<?= $row['picture'] ?>" class="card-img-top" alt="<?= $row['name'] ?>">
             <div class="card-body">
                 <h5 class="card-title"><?= $row['name'] ?></h5>
                 <p class="card-text">
